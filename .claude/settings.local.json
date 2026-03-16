@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "WebSearch",
+      "WebFetch(domain:sonos.svrooij.io)",
+      "WebFetch(domain:github.com)",
+      "WebFetch(domain:tunein-api.corehacked.com)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)"
+    ]
+  }
+}
