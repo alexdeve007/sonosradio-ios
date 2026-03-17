@@ -27,8 +27,6 @@ targets:
         UILaunchScreen: {}
     entitlements:
       path: SonosRadio/SonosRadio.entitlements
-      properties:
-        com.apple.developer.networking.multicast: true
   SonosRadioTests:
     type: bundle.unit-test
     platform: iOS
