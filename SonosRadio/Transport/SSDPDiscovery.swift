@@ -39,8 +39,9 @@ final class SSDPDiscovery: Sendable {
         var tv = timeval(tv_sec: 1, tv_usec: 0)
         setsockopt(fd, SOL_SOCKET, SO_RCVTIMEO, &tv, socklen_t(MemoryLayout<timeval>.size))
 
-        // Build multicast destination
+        // Build multicast destination (sin_len required on Apple BSD stack)
         var addr = sockaddr_in()
+        addr.sin_len = UInt8(MemoryLayout<sockaddr_in>.size)
         addr.sin_family = sa_family_t(AF_INET)
         addr.sin_port = Self.multicastPort.bigEndian
         inet_pton(AF_INET, Self.multicastAddress, &addr.sin_addr)
@@ -48,18 +49,19 @@ final class SSDPDiscovery: Sendable {
         // Send M-SEARCH
         let message = Self.searchMessage
         print("[SSDP] Sending M-SEARCH to \(Self.multicastAddress):\(Self.multicastPort)")
-        let sent = message.withCString { ptr in
+        let sendResult = message.withCString { ptr in
             withUnsafePointer(to: addr) { addrPtr in
                 addrPtr.withMemoryRebound(to: sockaddr.self, capacity: 1) { sockaddrPtr in
                     sendto(fd, ptr, strlen(ptr), 0, sockaddrPtr, socklen_t(MemoryLayout<sockaddr_in>.size))
                 }
             }
         }
-        guard sent > 0 else {
-            print("[SSDP] sendto failed, errno: \(errno)")
-            throw SSDPError.sendFailed
+        guard sendResult > 0 else {
+            let err = errno
+            print("[SSDP] sendto failed, errno: \(err) (\(String(cString: strerror(err))))")
+            throw SSDPError.sendFailed(errno: err)
         }
-        print("[SSDP] Sent \(sent) bytes, waiting for responses...")
+        print("[SSDP] Sent \(sendResult) bytes, waiting for responses...")
 
         // Receive responses
         var discoveredURLs = Set<URL>()
@@ -127,13 +129,13 @@ final class SSDPDiscovery: Sendable {
 
     enum SSDPError: LocalizedError {
         case socketCreationFailed
-        case sendFailed
+        case sendFailed(errno: Int32)
         case invalidDeviceDescription
 
         var errorDescription: String? {
             switch self {
             case .socketCreationFailed: return "Failed to create UDP socket for SSDP"
-            case .sendFailed: return "Failed to send SSDP M-SEARCH"
+            case .sendFailed(let err): return "SSDP send failed: \(String(cString: strerror(err))) (errno \(err))"
             case .invalidDeviceDescription: return "Invalid UPnP device description"
             }
         }
