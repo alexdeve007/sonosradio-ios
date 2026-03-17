@@ -10,15 +10,19 @@ struct SonosRadioApp: App {
 
     var body: some Scene {
         WindowGroup {
-            ContentView(
-                speakersVM: speakersVM ?? SpeakersViewModel(provider: provider),
-                nowPlayingVM: nowPlayingVM ?? NowPlayingViewModel(provider: provider),
-                stationsVM: stationsVM
-            )
-            .onAppear {
-                if speakersVM == nil {
-                    speakersVM = SpeakersViewModel(provider: provider)
-                    nowPlayingVM = NowPlayingViewModel(provider: provider)
+            Group {
+                if let speakersVM, let nowPlayingVM {
+                    ContentView(
+                        speakersVM: speakersVM,
+                        nowPlayingVM: nowPlayingVM,
+                        stationsVM: stationsVM
+                    )
+                } else {
+                    ProgressView("Loading...")
+                        .onAppear {
+                            speakersVM = SpeakersViewModel(provider: provider)
+                            nowPlayingVM = NowPlayingViewModel(provider: provider)
+                        }
                 }
             }
         }

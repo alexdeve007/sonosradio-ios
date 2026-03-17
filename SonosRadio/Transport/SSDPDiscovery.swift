@@ -25,15 +25,18 @@ final class SSDPDiscovery: Sendable {
 
     private func performDiscovery(timeout: TimeInterval) throws -> [URL] {
         let fd = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP)
-        guard fd >= 0 else { throw SSDPError.socketCreationFailed }
+        guard fd >= 0 else {
+            print("[SSDP] Failed to create socket, errno: \(errno)")
+            throw SSDPError.socketCreationFailed
+        }
         defer { close(fd) }
 
         // Allow address reuse
         var reuse: Int32 = 1
         setsockopt(fd, SOL_SOCKET, SO_REUSEADDR, &reuse, socklen_t(MemoryLayout<Int32>.size))
 
-        // Set receive timeout
-        var tv = timeval(tv_sec: Int(timeout), tv_usec: 0)
+        // Set short receive timeout so we can loop and check deadline
+        var tv = timeval(tv_sec: 1, tv_usec: 0)
         setsockopt(fd, SOL_SOCKET, SO_RCVTIMEO, &tv, socklen_t(MemoryLayout<timeval>.size))
 
         // Build multicast destination
@@ -44,6 +47,7 @@ final class SSDPDiscovery: Sendable {
 
         // Send M-SEARCH
         let message = Self.searchMessage
+        print("[SSDP] Sending M-SEARCH to \(Self.multicastAddress):\(Self.multicastPort)")
         let sent = message.withCString { ptr in
             withUnsafePointer(to: addr) { addrPtr in
                 addrPtr.withMemoryRebound(to: sockaddr.self, capacity: 1) { sockaddrPtr in
@@ -51,7 +55,11 @@ final class SSDPDiscovery: Sendable {
                 }
             }
         }
-        guard sent > 0 else { throw SSDPError.sendFailed }
+        guard sent > 0 else {
+            print("[SSDP] sendto failed, errno: \(errno)")
+            throw SSDPError.sendFailed
+        }
+        print("[SSDP] Sent \(sent) bytes, waiting for responses...")
 
         // Receive responses
         var discoveredURLs = Set<URL>()
@@ -61,15 +69,20 @@ final class SSDPDiscovery: Sendable {
         let deadline = Date().addingTimeInterval(timeout)
         while Date() < deadline {
             let received = recv(fd, buffer, 4096, 0)
-            if received <= 0 { break }
+            if received <= 0 {
+                // Timeout (EAGAIN) — keep waiting until deadline
+                continue
+            }
 
             buffer[received] = 0  // null-terminate
             let response = String(cString: buffer)
             if let locationURL = Self.extractLocation(from: response) {
+                print("[SSDP] Found device at: \(locationURL)")
                 discoveredURLs.insert(locationURL)
             }
         }
 
+        print("[SSDP] Discovery complete: found \(discoveredURLs.count) device(s)")
         return Array(discoveredURLs)
     }
 
