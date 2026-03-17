@@ -21,6 +21,9 @@ xcuserdata/
 Packages/
 Package.resolved
 
+# Claude
+.claude/
+
 # Misc
 .DS_Store
 *.swp
