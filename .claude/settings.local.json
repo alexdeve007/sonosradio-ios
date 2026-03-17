@@ -6,7 +6,8 @@
       "WebFetch(domain:github.com)",
       "WebFetch(domain:tunein-api.corehacked.com)",
       "Bash(git add:*)",
-      "Bash(git commit:*)"
+      "Bash(git commit:*)",
+      "Bash(wc -l /Users/alevy/personal-sonos-ios/SonosRadio/Services/*.swift)"
     ]
   }
 }

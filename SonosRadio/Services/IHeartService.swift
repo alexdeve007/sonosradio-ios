@@ -60,8 +60,8 @@ struct IHeartService: Sendable {
                 artworkURL: (item["logo"] as? String).flatMap { URL(string: $0) },
                 source: .iHeart,
                 sourceId: "\(id)",
-                description: item["description"] as? String,
-                genre: item["genres"] as? String
+                genre: item["genres"] as? String,
+                description: item["description"] as? String
             )
         }
     }

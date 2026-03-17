@@ -1,0 +1,571 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		022903E3FD0B53F4604ADD17 /* SonosRadioApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 471ED30ECDA7832C01E20385 /* SonosRadioApp.swift */; };
+		0F8463231CE01AF2AC1E8BCB /* LocalUPnPProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = B868CC2AC533CF4265224176 /* LocalUPnPProvider.swift */; };
+		1C63EB2AB1B6734C58EAF7A1 /* IHeartService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E4B12302E872DCBBB50AE65 /* IHeartService.swift */; };
+		1DBDFFDD57D71C27C91E3F28 /* UPnPEventParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDF026524DCD66308810A75C /* UPnPEventParser.swift */; };
+		290DDE8EC5D5CB9F72B84FD6 /* ControlProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = D91B9C3042E8FAD86EC07117 /* ControlProvider.swift */; };
+		31ED0C3ACFE8BBE3F5778797 /* Speaker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 794842FBBFE4C8B634A864A1 /* Speaker.swift */; };
+		33B0D507BF10002049979E48 /* StationsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23AE9B90C71C24750A5CA65C /* StationsView.swift */; };
+		6092EE400312AC1844BE6FD8 /* SpeakersViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B6D1CE3FC212D18E6F3B85A /* SpeakersViewModel.swift */; };
+		751CC2DEE7158229FEB95B2E /* Debouncer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 043583239186FDAB74A74F02 /* Debouncer.swift */; };
+		7FCADAA6B8EBD86661B4B1AB /* StationPreset.swift in Sources */ = {isa = PBXBuildFile; fileRef = 820B8C3046ABB0FD93F119BE /* StationPreset.swift */; };
+		86DA2DF87577964802F197D8 /* NowPlayingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95F235544E5B33284F4E2A40 /* NowPlayingViewModel.swift */; };
+		886743EE72EDFAB958F68600 /* XMLHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2BC375C2B9AB9CE7A7DA8B75 /* XMLHelpers.swift */; };
+		8C5B5C4441C36D72FD2CBEF4 /* StationsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 300D73770DB7A1073223F383 /* StationsViewModel.swift */; };
+		8CD91CE641172AC3FFD9746A /* StreamResolver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B5C6D90AF9F9B0C4D73AE20 /* StreamResolver.swift */; };
+		95EAD126C4FA7F7715A0B992 /* TuneInService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 219EB347B326BA078EBEA69B /* TuneInService.swift */; };
+		98BECF4D5AF80B047087DCAC /* SSDPDiscovery.swift in Sources */ = {isa = PBXBuildFile; fileRef = A383A1BC27B1E48102AD01CE /* SSDPDiscovery.swift */; };
+		99BFA351E9857536A8CEFC38 /* StationRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1EFB24721A507EDF95DE95E0 /* StationRowView.swift */; };
+		9B6EF63B5B6C3F1CD27B8E0B /* UPnPEventServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F115A3E93D4014531C23586 /* UPnPEventServer.swift */; };
+		9FDB57AF7770458FF52C3A21 /* Station.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8B2D5F5F0109930CD60147E /* Station.swift */; };
+		A13378FBECF9D9FDEA22243B /* SOAPClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16EFAC96182998115A206CF9 /* SOAPClient.swift */; };
+		AA19DCE81310D89D7CF4B084 /* GroupPreset.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B7A69B90202D0C6F1FEBC3C /* GroupPreset.swift */; };
+		B44616E6E723FE127064E0CB /* NowPlayingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F2A0664E467D69361558B72 /* NowPlayingView.swift */; };
+		C9223A9640571246AB7A3713 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF4859EC82DAB6D127F0BD54 /* SettingsView.swift */; };
+		D34D4FFEDBF33A53B7C0462D /* SpeakersView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7509C7766CA675CA9C09B9A4 /* SpeakersView.swift */; };
+		E92EE83D9AB24AF61EBC67DD /* PresetImporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 208C0AD0D71C9F68E4BA05AD /* PresetImporter.swift */; };
+		F62183E3B197EDA8251041FF /* ImportSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EB0A4041FDB603B6BB0835B /* ImportSource.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		3C95E455EF922033ABE3488B /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 28290D4FB34E2E969D51FE1A /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = F78D35F2C018D95A9BDE6FC4;
+			remoteInfo = SonosRadio;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		043583239186FDAB74A74F02 /* Debouncer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Debouncer.swift; sourceTree = "<group>"; };
+		0FC4BA3CBB260F9E843DDFF1 /* SonosRadio.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = SonosRadio.entitlements; sourceTree = "<group>"; };
+		16EFAC96182998115A206CF9 /* SOAPClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SOAPClient.swift; sourceTree = "<group>"; };
+		1B7A69B90202D0C6F1FEBC3C /* GroupPreset.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupPreset.swift; sourceTree = "<group>"; };
+		1EFB24721A507EDF95DE95E0 /* StationRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StationRowView.swift; sourceTree = "<group>"; };
+		208C0AD0D71C9F68E4BA05AD /* PresetImporter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PresetImporter.swift; sourceTree = "<group>"; };
+		219EB347B326BA078EBEA69B /* TuneInService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TuneInService.swift; sourceTree = "<group>"; };
+		23AE9B90C71C24750A5CA65C /* StationsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StationsView.swift; sourceTree = "<group>"; };
+		2B6D1CE3FC212D18E6F3B85A /* SpeakersViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpeakersViewModel.swift; sourceTree = "<group>"; };
+		2BC375C2B9AB9CE7A7DA8B75 /* XMLHelpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XMLHelpers.swift; sourceTree = "<group>"; };
+		300D73770DB7A1073223F383 /* StationsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StationsViewModel.swift; sourceTree = "<group>"; };
+		471ED30ECDA7832C01E20385 /* SonosRadioApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SonosRadioApp.swift; sourceTree = "<group>"; };
+		5E4B12302E872DCBBB50AE65 /* IHeartService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IHeartService.swift; sourceTree = "<group>"; };
+		6F2A0664E467D69361558B72 /* NowPlayingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NowPlayingView.swift; sourceTree = "<group>"; };
+		7509C7766CA675CA9C09B9A4 /* SpeakersView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpeakersView.swift; sourceTree = "<group>"; };
+		794842FBBFE4C8B634A864A1 /* Speaker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Speaker.swift; sourceTree = "<group>"; };
+		815A6F9576FC40C1B7879E95 /* SonosRadio.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = SonosRadio.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		820B8C3046ABB0FD93F119BE /* StationPreset.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StationPreset.swift; sourceTree = "<group>"; };
+		8B5C6D90AF9F9B0C4D73AE20 /* StreamResolver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StreamResolver.swift; sourceTree = "<group>"; };
+		8EB0A4041FDB603B6BB0835B /* ImportSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImportSource.swift; sourceTree = "<group>"; };
+		95F235544E5B33284F4E2A40 /* NowPlayingViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NowPlayingViewModel.swift; sourceTree = "<group>"; };
+		9F115A3E93D4014531C23586 /* UPnPEventServer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UPnPEventServer.swift; sourceTree = "<group>"; };
+		A383A1BC27B1E48102AD01CE /* SSDPDiscovery.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SSDPDiscovery.swift; sourceTree = "<group>"; };
+		AD55FC2B463EE6D532B7BB50 /* SonosRadioTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = SonosRadioTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		B868CC2AC533CF4265224176 /* LocalUPnPProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalUPnPProvider.swift; sourceTree = "<group>"; };
+		D91B9C3042E8FAD86EC07117 /* ControlProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ControlProvider.swift; sourceTree = "<group>"; };
+		DDF026524DCD66308810A75C /* UPnPEventParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UPnPEventParser.swift; sourceTree = "<group>"; };
+		E4F1CE4B0BF13A1617D14249 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		E8B2D5F5F0109930CD60147E /* Station.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Station.swift; sourceTree = "<group>"; };
+		FF4859EC82DAB6D127F0BD54 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXGroup section */
+		060A79256B344DAB917700C0 /* Settings */ = {
+			isa = PBXGroup;
+			children = (
+				FF4859EC82DAB6D127F0BD54 /* SettingsView.swift */,
+			);
+			path = Settings;
+			sourceTree = "<group>";
+		};
+		11EE830DE7F1EB53627787F7 /* Speakers */ = {
+			isa = PBXGroup;
+			children = (
+				7509C7766CA675CA9C09B9A4 /* SpeakersView.swift */,
+			);
+			path = Speakers;
+			sourceTree = "<group>";
+		};
+		30F6E6BBCC12BBF9D555EFBC /* App */ = {
+			isa = PBXGroup;
+			children = (
+				471ED30ECDA7832C01E20385 /* SonosRadioApp.swift */,
+			);
+			path = App;
+			sourceTree = "<group>";
+		};
+		3814FAEF59118E2585208AB2 = {
+			isa = PBXGroup;
+			children = (
+				CD9B6836B43AD9B246937350 /* SonosRadio */,
+				5C32C8DFF6F6A3C1F32EC507 /* SonosRadioTests */,
+				E65F61FD113CDDB1A4A568BB /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		437509822D3CBD38515533F7 /* NowPlaying */ = {
+			isa = PBXGroup;
+			children = (
+				6F2A0664E467D69361558B72 /* NowPlayingView.swift */,
+			);
+			path = NowPlaying;
+			sourceTree = "<group>";
+		};
+		594AFB436D5657F1BC7CC585 /* ViewModels */ = {
+			isa = PBXGroup;
+			children = (
+				95F235544E5B33284F4E2A40 /* NowPlayingViewModel.swift */,
+				2B6D1CE3FC212D18E6F3B85A /* SpeakersViewModel.swift */,
+				300D73770DB7A1073223F383 /* StationsViewModel.swift */,
+			);
+			path = ViewModels;
+			sourceTree = "<group>";
+		};
+		5C32C8DFF6F6A3C1F32EC507 /* SonosRadioTests */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = SonosRadioTests;
+			sourceTree = "<group>";
+		};
+		7446AC8D4279FBED717574FF /* Utilities */ = {
+			isa = PBXGroup;
+			children = (
+				043583239186FDAB74A74F02 /* Debouncer.swift */,
+				2BC375C2B9AB9CE7A7DA8B75 /* XMLHelpers.swift */,
+			);
+			path = Utilities;
+			sourceTree = "<group>";
+		};
+		93D9F77E594ECD035499CA05 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				437509822D3CBD38515533F7 /* NowPlaying */,
+				060A79256B344DAB917700C0 /* Settings */,
+				11EE830DE7F1EB53627787F7 /* Speakers */,
+				A7098B7D1632C0CB1BF21A23 /* Stations */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		98F0509CED4F3A8CEA970A26 /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				5E4B12302E872DCBBB50AE65 /* IHeartService.swift */,
+				208C0AD0D71C9F68E4BA05AD /* PresetImporter.swift */,
+				8B5C6D90AF9F9B0C4D73AE20 /* StreamResolver.swift */,
+				219EB347B326BA078EBEA69B /* TuneInService.swift */,
+			);
+			path = Services;
+			sourceTree = "<group>";
+		};
+		A7098B7D1632C0CB1BF21A23 /* Stations */ = {
+			isa = PBXGroup;
+			children = (
+				1EFB24721A507EDF95DE95E0 /* StationRowView.swift */,
+				23AE9B90C71C24750A5CA65C /* StationsView.swift */,
+			);
+			path = Stations;
+			sourceTree = "<group>";
+		};
+		B8356505BE913DD2937989B1 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				1B7A69B90202D0C6F1FEBC3C /* GroupPreset.swift */,
+				8EB0A4041FDB603B6BB0835B /* ImportSource.swift */,
+				794842FBBFE4C8B634A864A1 /* Speaker.swift */,
+				E8B2D5F5F0109930CD60147E /* Station.swift */,
+				820B8C3046ABB0FD93F119BE /* StationPreset.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		CD9B6836B43AD9B246937350 /* SonosRadio */ = {
+			isa = PBXGroup;
+			children = (
+				E4F1CE4B0BF13A1617D14249 /* Info.plist */,
+				0FC4BA3CBB260F9E843DDFF1 /* SonosRadio.entitlements */,
+				30F6E6BBCC12BBF9D555EFBC /* App */,
+				B8356505BE913DD2937989B1 /* Models */,
+				98F0509CED4F3A8CEA970A26 /* Services */,
+				D2756FF2100C92E57E665098 /* Transport */,
+				7446AC8D4279FBED717574FF /* Utilities */,
+				594AFB436D5657F1BC7CC585 /* ViewModels */,
+				93D9F77E594ECD035499CA05 /* Views */,
+			);
+			path = SonosRadio;
+			sourceTree = "<group>";
+		};
+		D2756FF2100C92E57E665098 /* Transport */ = {
+			isa = PBXGroup;
+			children = (
+				D91B9C3042E8FAD86EC07117 /* ControlProvider.swift */,
+				B868CC2AC533CF4265224176 /* LocalUPnPProvider.swift */,
+				16EFAC96182998115A206CF9 /* SOAPClient.swift */,
+				A383A1BC27B1E48102AD01CE /* SSDPDiscovery.swift */,
+				DDF026524DCD66308810A75C /* UPnPEventParser.swift */,
+				9F115A3E93D4014531C23586 /* UPnPEventServer.swift */,
+			);
+			path = Transport;
+			sourceTree = "<group>";
+		};
+		E65F61FD113CDDB1A4A568BB /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				815A6F9576FC40C1B7879E95 /* SonosRadio.app */,
+				AD55FC2B463EE6D532B7BB50 /* SonosRadioTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		011BA57E428E37671E7289EB /* SonosRadioTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 7E0D3D982703A4B06C55D1FE /* Build configuration list for PBXNativeTarget "SonosRadioTests" */;
+			buildPhases = (
+				58FF9FEE59BFEF9CEEED758F /* Sources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				C99449DF01925C0706CB2AD3 /* PBXTargetDependency */,
+			);
+			name = SonosRadioTests;
+			packageProductDependencies = (
+			);
+			productName = SonosRadioTests;
+			productReference = AD55FC2B463EE6D532B7BB50 /* SonosRadioTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		F78D35F2C018D95A9BDE6FC4 /* SonosRadio */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = EFF20EEF7307065CD5B2010A /* Build configuration list for PBXNativeTarget "SonosRadio" */;
+			buildPhases = (
+				AE7B2A91078B7F5D56A19F4A /* Sources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = SonosRadio;
+			packageProductDependencies = (
+			);
+			productName = SonosRadio;
+			productReference = 815A6F9576FC40C1B7879E95 /* SonosRadio.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		28290D4FB34E2E969D51FE1A /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = YES;
+				LastUpgradeCheck = 1600;
+				TargetAttributes = {
+				};
+			};
+			buildConfigurationList = FDD3A50ED3E61AFF4F45F1A1 /* Build configuration list for PBXProject "SonosRadio" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				Base,
+				en,
+			);
+			mainGroup = 3814FAEF59118E2585208AB2;
+			minimizedProjectReferenceProxies = 1;
+			preferredProjectObjectVersion = 77;
+			productRefGroup = E65F61FD113CDDB1A4A568BB /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				F78D35F2C018D95A9BDE6FC4 /* SonosRadio */,
+				011BA57E428E37671E7289EB /* SonosRadioTests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		58FF9FEE59BFEF9CEEED758F /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		AE7B2A91078B7F5D56A19F4A /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				290DDE8EC5D5CB9F72B84FD6 /* ControlProvider.swift in Sources */,
+				751CC2DEE7158229FEB95B2E /* Debouncer.swift in Sources */,
+				AA19DCE81310D89D7CF4B084 /* GroupPreset.swift in Sources */,
+				1C63EB2AB1B6734C58EAF7A1 /* IHeartService.swift in Sources */,
+				F62183E3B197EDA8251041FF /* ImportSource.swift in Sources */,
+				0F8463231CE01AF2AC1E8BCB /* LocalUPnPProvider.swift in Sources */,
+				B44616E6E723FE127064E0CB /* NowPlayingView.swift in Sources */,
+				86DA2DF87577964802F197D8 /* NowPlayingViewModel.swift in Sources */,
+				E92EE83D9AB24AF61EBC67DD /* PresetImporter.swift in Sources */,
+				A13378FBECF9D9FDEA22243B /* SOAPClient.swift in Sources */,
+				98BECF4D5AF80B047087DCAC /* SSDPDiscovery.swift in Sources */,
+				C9223A9640571246AB7A3713 /* SettingsView.swift in Sources */,
+				022903E3FD0B53F4604ADD17 /* SonosRadioApp.swift in Sources */,
+				31ED0C3ACFE8BBE3F5778797 /* Speaker.swift in Sources */,
+				D34D4FFEDBF33A53B7C0462D /* SpeakersView.swift in Sources */,
+				6092EE400312AC1844BE6FD8 /* SpeakersViewModel.swift in Sources */,
+				9FDB57AF7770458FF52C3A21 /* Station.swift in Sources */,
+				7FCADAA6B8EBD86661B4B1AB /* StationPreset.swift in Sources */,
+				99BFA351E9857536A8CEFC38 /* StationRowView.swift in Sources */,
+				33B0D507BF10002049979E48 /* StationsView.swift in Sources */,
+				8C5B5C4441C36D72FD2CBEF4 /* StationsViewModel.swift in Sources */,
+				8CD91CE641172AC3FFD9746A /* StreamResolver.swift in Sources */,
+				95EAD126C4FA7F7715A0B992 /* TuneInService.swift in Sources */,
+				1DBDFFDD57D71C27C91E3F28 /* UPnPEventParser.swift in Sources */,
+				9B6EF63B5B6C3F1CD27B8E0B /* UPnPEventServer.swift in Sources */,
+				886743EE72EDFAB958F68600 /* XMLHelpers.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		C99449DF01925C0706CB2AD3 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = F78D35F2C018D95A9BDE6FC4 /* SonosRadio */;
+			targetProxy = 3C95E455EF922033ABE3488B /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		092825650CC714825311DFDF /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 6.0;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Release;
+		};
+		7B1EE3D9B8BE343B9D646A60 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"DEBUG=1",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 6.0;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Debug;
+		};
+		82D23649F69FF6054454311E /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = SonosRadio/SonosRadio.entitlements;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				INFOPLIST_FILE = SonosRadio/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.sonosradio.SonosRadio;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		BCE510696614E55CAA699260 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = SonosRadio/SonosRadio.entitlements;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				INFOPLIST_FILE = SonosRadio/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.sonosradio.SonosRadio;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		E1CF8B1EFD812B8490E0C79F /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.sonosradio.SonosRadioTests;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/SonosRadio.app/SonosRadio";
+			};
+			name = Release;
+		};
+		EF470E111A61A170FE47D1A1 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.sonosradio.SonosRadioTests;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/SonosRadio.app/SonosRadio";
+			};
+			name = Debug;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		7E0D3D982703A4B06C55D1FE /* Build configuration list for PBXNativeTarget "SonosRadioTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				EF470E111A61A170FE47D1A1 /* Debug */,
+				E1CF8B1EFD812B8490E0C79F /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		EFF20EEF7307065CD5B2010A /* Build configuration list for PBXNativeTarget "SonosRadio" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				82D23649F69FF6054454311E /* Debug */,
+				BCE510696614E55CAA699260 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		FDD3A50ED3E61AFF4F45F1A1 /* Build configuration list for PBXProject "SonosRadio" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				7B1EE3D9B8BE343B9D646A60 /* Debug */,
+				092825650CC714825311DFDF /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 28290D4FB34E2E969D51FE1A /* Project object */;
+}
