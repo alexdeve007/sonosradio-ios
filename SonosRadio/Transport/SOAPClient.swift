@@ -9,6 +9,7 @@ struct SOAPClient: Sendable {
         case renderingControl = "RenderingControl"
         case zoneGroupTopology = "ZoneGroupTopology"
         case groupRenderingControl = "GroupRenderingControl"
+        case musicServices = "MusicServices"
 
         var controlPath: String {
             switch self {
@@ -16,6 +17,7 @@ struct SOAPClient: Sendable {
             case .renderingControl: return "/MediaRenderer/RenderingControl/Control"
             case .zoneGroupTopology: return "/ZoneGroupTopology/Control"
             case .groupRenderingControl: return "/MediaRenderer/GroupRenderingControl/Control"
+            case .musicServices: return "/MusicServices/Control"
             }
         }
 
@@ -25,11 +27,19 @@ struct SOAPClient: Sendable {
             case .renderingControl: return "/MediaRenderer/RenderingControl/Event"
             case .zoneGroupTopology: return "/ZoneGroupTopology/Event"
             case .groupRenderingControl: return "/MediaRenderer/GroupRenderingControl/Event"
+            case .musicServices: return "/MusicServices/Event"
             }
         }
 
         var serviceType: String {
             "urn:schemas-upnp-org:service:\(rawValue):1"
+        }
+
+        var needsInstanceID: Bool {
+            switch self {
+            case .avTransport, .renderingControl, .groupRenderingControl: return true
+            case .zoneGroupTopology, .musicServices: return false
+            }
         }
     }
 
@@ -55,6 +65,9 @@ struct SOAPClient: Sendable {
 
     func buildEnvelope(action: String, service: Service, parameters: [(name: String, value: String)] = []) -> String {
         var params = ""
+        if service.needsInstanceID {
+            params += "<InstanceID>0</InstanceID>"
+        }
         for (name, value) in parameters {
             params += "<\(name)>\(escapeXML(value))</\(name)>"
         }
@@ -65,7 +78,6 @@ struct SOAPClient: Sendable {
                     s:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/">
           <s:Body>
             <u:\(action) xmlns:u="\(service.serviceType)">
-              <InstanceID>0</InstanceID>
               \(params)
             </u:\(action)>
           </s:Body>
@@ -97,7 +109,7 @@ struct SOAPClient: Sendable {
         request.setValue("text/xml; charset=\"utf-8\"", forHTTPHeaderField: "Content-Type")
         request.setValue("\(service.serviceType)#\(action)", forHTTPHeaderField: "SOAPAction")
         request.httpBody = envelope.data(using: .utf8)
-        request.timeoutInterval = 5
+        request.timeoutInterval = 10
 
         let (data, response): (Data, URLResponse)
         do {
@@ -113,9 +125,15 @@ struct SOAPClient: Sendable {
         let body = String(data: data, encoding: .utf8) ?? ""
 
         if httpResponse.statusCode == 500 {
+            print("[SOAP] Fault response body: \(body.prefix(1000))")
             let faultCode = XMLValueExtractor.extractValue(from: body, atPath: ["Envelope", "Body", "Fault", "faultcode"]) ?? "unknown"
             let faultString = XMLValueExtractor.extractValue(from: body, atPath: ["Envelope", "Body", "Fault", "faultstring"]) ?? "Unknown SOAP fault"
-            throw SOAPError.soapFault(faultCode: faultCode, faultString: faultString)
+            // Try to extract UPnP error code from detail
+            let allValues = XMLValueExtractor.extractAllValues(from: body)
+            let errorCode = allValues["errorCode"] ?? ""
+            let errorDesc = allValues["errorDescription"] ?? ""
+            let detail = errorCode.isEmpty ? faultString : "\(faultString) (code \(errorCode): \(errorDesc))"
+            throw SOAPError.soapFault(faultCode: faultCode, faultString: detail)
         }
 
         guard (200...299).contains(httpResponse.statusCode) else {

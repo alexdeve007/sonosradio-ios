@@ -2,31 +2,70 @@ import Foundation
 
 struct StreamResolver: Sendable {
 
+    private static let audioExtensions: Set<String> = [
+        "mp3", "aac", "ogg", "flac", "wav", "opus", "wma"
+    ]
+
     func resolve(url: String) async throws -> String {
         guard let requestURL = URL(string: url) else {
             throw ResolverError.invalidURL
         }
 
         let pathExtension = requestURL.pathExtension.lowercased()
+
+        // Known playlist formats — resolve to stream URL
         if pathExtension == "pls" {
             return try await resolvePLS(url: requestURL)
         } else if pathExtension == "m3u" || pathExtension == "m3u8" {
             return try await resolveM3U(url: requestURL)
         }
 
-        var request = URLRequest(url: requestURL)
-        request.httpMethod = "HEAD"
-        request.timeoutInterval = 5
-
-        let (_, response) = try await URLSession.shared.data(for: request)
-        let contentType = (response as? HTTPURLResponse)?.value(forHTTPHeaderField: "Content-Type") ?? ""
-
-        if contentType.contains("audio/x-scpls") || contentType.contains("application/pls") {
-            return try await resolvePLS(url: requestURL)
-        } else if contentType.contains("audio/x-mpegurl") || contentType.contains("application/vnd.apple.mpegurl") {
-            return try await resolveM3U(url: requestURL)
+        // Known audio extensions — already a direct stream
+        if Self.audioExtensions.contains(pathExtension) {
+            return url
         }
 
+        // Unknown extension — check for redirects (e.g. CDN load balancers)
+        let resolved = try await resolveRedirects(url: requestURL)
+
+        // If the resolved URL is a playlist, resolve it
+        let resolvedExt = resolved.pathExtension.lowercased()
+        if resolvedExt == "pls" {
+            return try await resolvePLS(url: resolved)
+        } else if resolvedExt == "m3u" || resolvedExt == "m3u8" {
+            return try await resolveM3U(url: resolved)
+        }
+
+        let result = resolved.absoluteString
+        if result != url {
+            print("[StreamResolver] Resolved redirect: \(url) -> \(result)")
+        }
+        return result
+    }
+
+    /// Follow one redirect using GET with a delegate that cancels after headers.
+    /// This avoids downloading infinite audio stream bodies.
+    private func resolveRedirects(url: URL) async throws -> URL {
+        let delegate = HeaderOnlyDelegate()
+        let config = URLSessionConfiguration.ephemeral
+        let session = URLSession(configuration: config, delegate: delegate, delegateQueue: nil)
+        defer { session.invalidateAndCancel() }
+
+        var request = URLRequest(url: url)
+        request.httpMethod = "GET"
+        request.timeoutInterval = 5
+
+        do {
+            let _ = try await session.data(for: request)
+        } catch let error as URLError where error.code == .cancelled {
+            // Expected — delegate cancelled after receiving headers
+        }
+
+        if let redirectURL = delegate.capturedRedirectURL {
+            let absolute = redirectURL.absoluteURL
+            print("[StreamResolver] Resolved redirect: \(url) -> \(absolute)")
+            return absolute
+        }
         return url
     }
 
@@ -69,5 +108,26 @@ struct StreamResolver: Sendable {
             case .noStreamFound: return "Could not resolve stream URL from playlist"
             }
         }
+    }
+}
+
+/// Captures redirect URLs and cancels the request after headers arrive,
+/// preventing infinite downloads from audio streams.
+private final class HeaderOnlyDelegate: NSObject, URLSessionDataDelegate {
+    var capturedRedirectURL: URL?
+
+    func urlSession(_ session: URLSession, task: URLSessionTask,
+                    willPerformHTTPRedirection response: HTTPURLResponse,
+                    newRequest request: URLRequest,
+                    completionHandler: @escaping (URLRequest?) -> Void) {
+        capturedRedirectURL = request.url
+        completionHandler(nil) // Don't follow — we captured the URL
+    }
+
+    func urlSession(_ session: URLSession, dataTask: URLSessionDataTask,
+                    didReceive response: URLResponse,
+                    completionHandler: @escaping (URLSession.ResponseDisposition) -> Void) {
+        // Got headers — cancel to avoid downloading stream body
+        completionHandler(.cancel)
     }
 }

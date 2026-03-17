@@ -28,7 +28,6 @@ struct SonosRadioApp: App {
         }
         .modelContainer(for: [
             StationPreset.self,
-            GroupPreset.self,
             ImportSource.self
         ])
     }
@@ -39,28 +38,13 @@ struct ContentView: View {
     @Bindable var nowPlayingVM: NowPlayingViewModel
     @Bindable var stationsVM: StationsViewModel
 
-    @State private var showSettings = false
-
     var body: some View {
         TabView {
-            NowPlayingView(viewModel: nowPlayingVM, speakers: speakersVM.speakers)
-                .tabItem { Label("Now Playing", systemImage: "play.circle") }
-
-            StationsView(viewModel: stationsVM, nowPlayingViewModel: nowPlayingVM, speakers: speakersVM.speakers)
+            StationsView(viewModel: stationsVM, nowPlayingViewModel: nowPlayingVM, speakersVM: speakersVM)
                 .tabItem { Label("Stations", systemImage: "radio") }
 
             SpeakersView(viewModel: speakersVM)
                 .tabItem { Label("Speakers", systemImage: "hifispeaker.2") }
-        }
-        .toolbar {
-            ToolbarItem(placement: .topBarTrailing) {
-                Button { showSettings = true } label: {
-                    Image(systemName: "gear")
-                }
-            }
-        }
-        .sheet(isPresented: $showSettings) {
-            SettingsView(speakers: speakersVM.speakers)
         }
         .task {
             await speakersVM.discover()

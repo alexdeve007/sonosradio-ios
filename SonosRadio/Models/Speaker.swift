@@ -34,7 +34,7 @@ struct Speaker: Identifiable, Hashable, Sendable {
 
 // MARK: - Speaker Group
 
-struct SpeakerGroup: Identifiable, Sendable {
+struct SpeakerGroup: Identifiable, Sendable, Equatable {
     var id: String { coordinator.id }
     var coordinator: Speaker
     var members: [Speaker]

@@ -25,9 +25,15 @@ struct PresetImporter: Sendable {
         var result = ImportResult()
 
         for (index, entry) in entries.enumerated() {
-            guard let name = entry["name"] as? String,
-                  let streamURL = entry["streamUrl"] as? String ?? entry["streamURL"] as? String else {
-                result.errors.append("Entry \(index): missing name or streamUrl")
+            guard let name = entry["name"] as? String
+                    ?? entry["Station Name"] as? String
+                    ?? entry["station_name"] as? String,
+                  let streamURL = entry["streamUrl"] as? String
+                    ?? entry["streamURL"] as? String
+                    ?? entry["Stream URL"] as? String
+                    ?? entry["stream_url"] as? String
+                    ?? entry["url"] as? String else {
+                result.errors.append("Entry \(index): missing name or stream URL")
                 continue
             }
 
@@ -40,7 +46,7 @@ struct PresetImporter: Sendable {
                 name: name,
                 streamURL: streamURL,
                 source: .directURL,
-                artworkURL: (entry["artworkUrl"] as? String ?? entry["artworkURL"] as? String).flatMap { URL(string: $0) },
+                artworkURL: (entry["artworkUrl"] as? String ?? entry["artworkURL"] as? String ?? entry["Artwork URL"] as? String ?? entry["artwork_url"] as? String).flatMap { URL(string: $0) },
                 sortOrder: maxOrder + 1 + index
             )
             context.insert(preset)

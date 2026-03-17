@@ -50,8 +50,48 @@ struct TuneInService: Sendable {
         }
     }
 
-    /// Build a Sonos-native TuneIn URI for better metadata display on hardware.
-    static func sonosURI(for guideId: String) -> String {
-        "x-sonosapi-stream:\(guideId)?sid=254&flags=8224&sn=0"
+    /// Resolve a TuneIn station ID to an actual stream URL via the Tune.ashx API.
+    func resolveStreamURL(stationId: String) async throws -> String {
+        guard let url = URL(string: "https://opml.radiotime.com/Tune.ashx?id=\(stationId)&render=json") else {
+            throw TuneInError.invalidStationId
+        }
+
+        let (data, _) = try await URLSession.shared.data(from: url)
+        let body = String(data: data, encoding: .utf8) ?? ""
+        print("[TuneIn] Tune.ashx response for \(stationId): \(body.prefix(500))")
+
+        if let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
+           let bodyArray = json["body"] as? [[String: Any]],
+           let first = bodyArray.first,
+           let streamURL = first["url"] as? String, !streamURL.isEmpty {
+            return streamURL
+        }
+
+        // Fallback: fetch non-JSON to get direct URL (PLS/M3U format)
+        guard let plainURL = URL(string: "https://opml.radiotime.com/Tune.ashx?id=\(stationId)") else {
+            throw TuneInError.noStreamFound
+        }
+        let (plainData, _) = try await URLSession.shared.data(from: plainURL)
+        let text = String(data: plainData, encoding: .utf8) ?? ""
+        for line in text.components(separatedBy: .newlines) {
+            let trimmed = line.trimmingCharacters(in: .whitespaces)
+            if trimmed.hasPrefix("http://") || trimmed.hasPrefix("https://") {
+                return trimmed
+            }
+        }
+
+        throw TuneInError.noStreamFound
+    }
+
+    enum TuneInError: LocalizedError {
+        case invalidStationId
+        case noStreamFound
+
+        var errorDescription: String? {
+            switch self {
+            case .invalidStationId: return "Invalid TuneIn station ID"
+            case .noStreamFound: return "Could not resolve TuneIn stream URL"
+            }
+        }
     }
 }

@@ -1,82 +1,47 @@
 import SwiftUI
-import SwiftData
 
 struct SpeakersView: View {
     @Bindable var viewModel: SpeakersViewModel
 
-    @Query(sort: \GroupPreset.dateCreated) private var groupPresets: [GroupPreset]
-    @Environment(\.modelContext) private var modelContext
-
-    @State private var showSaveGroupSheet = false
-    @State private var newGroupName = ""
+    @State private var isGrouping = false
+    @State private var groupSelection: Set<String> = []
 
     var body: some View {
         NavigationStack {
             List {
-                Section("Speakers") {
-                    if viewModel.isDiscovering {
-                        ProgressView("Discovering speakers...")
-                    }
-
-                    ForEach(viewModel.speakers) { speaker in
-                        HStack {
-                            VStack(alignment: .leading) {
-                                Text(speaker.name).font(.headline)
-                                HStack(spacing: 4) {
-                                    Image(systemName: stateIcon(speaker.transportState))
-                                        .font(.caption)
-                                    if let track = speaker.currentTrackName {
-                                        Text(track).font(.caption).foregroundStyle(.secondary)
-                                    } else {
-                                        Text(speaker.transportState.rawValue.capitalized)
-                                            .font(.caption).foregroundStyle(.secondary)
-                                    }
-                                }
-                            }
-
-                            Spacer()
-
-                            Button {
-                                Task { await viewModel.toggleMute(on: speaker) }
-                            } label: {
-                                Image(systemName: speaker.isMuted ? "speaker.slash" : "speaker.wave.2")
-                                    .font(.caption)
-                            }
-
-                            Slider(value: Binding(
-                                get: { Double(speaker.volume) },
-                                set: { val in
-                                    Task { await viewModel.setVolume(Int(val), on: speaker) }
-                                }
-                            ), in: 0...100)
-                            .frame(width: 100)
-
-                            Text("\(speaker.volume)")
-                                .font(.caption).monospacedDigit()
-                                .frame(width: 28)
-                        }
-                    }
+                if viewModel.isDiscovering && viewModel.groups.isEmpty {
+                    ProgressView("Discovering speakers...")
                 }
 
-                if !groupPresets.isEmpty {
-                    Section("Group Presets") {
-                        ForEach(groupPresets) { preset in
-                            HStack {
-                                VStack(alignment: .leading) {
-                                    Text(preset.name).font(.body)
-                                    Text("\(preset.memberIds.count) speakers")
-                                        .font(.caption).foregroundStyle(.secondary)
-                                }
-                                Spacer()
-                                Button("Activate") {
-                                    activateGroupPreset(preset)
-                                }
-                                .buttonStyle(.bordered)
-                                .controlSize(.small)
-                            }
+                if isGrouping {
+                    Section("Select speakers to group") {
+                        ForEach(viewModel.speakers) { speaker in
+                            groupingRow(speaker)
                         }
-                        .onDelete { offsets in
-                            for i in offsets { modelContext.delete(groupPresets[i]) }
+                    }
+                    Section {
+                        Button {
+                            createGroup()
+                        } label: {
+                            Label("Group Selected (\(groupSelection.count))", systemImage: "link")
+                        }
+                        .disabled(groupSelection.count < 2)
+
+                        Button("Cancel", role: .cancel) {
+                            isGrouping = false
+                            groupSelection.removeAll()
+                        }
+                    }
+                } else {
+                    ForEach(viewModel.groups) { group in
+                        Section {
+                            // Coordinator row with transport controls
+                            speakerRow(group.coordinator, isGroupCoordinator: group.members.count > 0)
+
+                            // Member rows (just volume, no transport)
+                            ForEach(group.members) { member in
+                                memberRow(member)
+                            }
                         }
                     }
                 }
@@ -89,15 +54,18 @@ struct SpeakersView: View {
                     }
                 }
                 ToolbarItem(placement: .topBarTrailing) {
-                    Button { showSaveGroupSheet = true } label: {
-                        Image(systemName: "plus.rectangle.on.rectangle")
+                    if !isGrouping {
+                        Button {
+                            isGrouping = true
+                            if let id = viewModel.selectedSpeaker?.id {
+                                groupSelection = [id]
+                            }
+                        } label: {
+                            Image(systemName: "link")
+                        }
+                        .disabled(viewModel.speakers.count < 2)
                     }
                 }
-            }
-            .alert("Save Group Preset", isPresented: $showSaveGroupSheet) {
-                TextField("Group Name", text: $newGroupName)
-                Button("Save") { saveCurrentGrouping() }
-                Button("Cancel", role: .cancel) { }
             }
             .alert("Error", isPresented: .init(
                 get: { viewModel.errorMessage != nil },
@@ -110,31 +78,151 @@ struct SpeakersView: View {
         }
     }
 
-    private func stateIcon(_ state: TransportState) -> String {
-        switch state {
-        case .playing: return "play.fill"
-        case .paused: return "pause.fill"
-        case .stopped: return "stop.fill"
-        case .transitioning: return "arrow.triangle.2.circlepath"
-        case .noMedia: return "minus.circle"
+    // MARK: - Coordinator Row (has transport controls)
+
+    @ViewBuilder
+    private func speakerRow(_ speaker: Speaker, isGroupCoordinator: Bool) -> some View {
+        let isSelected = viewModel.selectedSpeaker?.id == speaker.id
+
+        VStack(spacing: 8) {
+            HStack {
+                // Play/pause for active speakers
+                if speaker.transportState == .playing || speaker.transportState == .paused {
+                    Button {
+                        Task { await viewModel.togglePlayPause(on: speaker) }
+                    } label: {
+                        Image(systemName: speaker.transportState == .playing ? "pause.fill" : "play.fill")
+                            .font(.title3)
+                            .frame(width: 28)
+                    }
+                    .buttonStyle(.plain)
+                }
+
+                VStack(alignment: .leading, spacing: 2) {
+                    HStack(spacing: 4) {
+                        Text(speaker.name)
+                            .font(.headline)
+                        if isGroupCoordinator {
+                            Image(systemName: "link")
+                                .font(.caption2)
+                                .foregroundStyle(.secondary)
+                        }
+                    }
+                    Text(statusText(for: speaker))
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+
+                Spacer()
+
+                if isSelected {
+                    Image(systemName: "checkmark.circle.fill")
+                        .foregroundStyle(.blue)
+                        .font(.caption)
+                }
+            }
+
+            volumeRow(speaker)
+        }
+        .padding(.vertical, 2)
+        .contentShape(Rectangle())
+        .onTapGesture {
+            viewModel.selectSpeaker(speaker)
+        }
+        .listRowBackground(isSelected ? Color.blue.opacity(0.08) : nil)
+    }
+
+    // MARK: - Member Row (volume only, no transport)
+
+    @ViewBuilder
+    private func memberRow(_ speaker: Speaker) -> some View {
+        VStack(spacing: 8) {
+            HStack {
+                Text(speaker.name)
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+                Spacer()
+            }
+            volumeRow(speaker)
+        }
+        .padding(.vertical, 2)
+    }
+
+    // MARK: - Volume Row (shared)
+
+    @ViewBuilder
+    private func volumeRow(_ speaker: Speaker) -> some View {
+        HStack(spacing: 8) {
+            Button {
+                Task { await viewModel.toggleMute(on: speaker) }
+            } label: {
+                Image(systemName: speaker.isMuted ? "speaker.slash.fill" : "speaker.wave.2.fill")
+                    .font(.caption)
+                    .frame(width: 20)
+            }
+            .buttonStyle(.plain)
+
+            Slider(value: Binding(
+                get: { Double(speaker.volume) },
+                set: { viewModel.setVolume(Int($0), on: speaker) }
+            ), in: 0...100)
+
+            Text("\(speaker.volume)")
+                .font(.caption).monospacedDigit()
+                .frame(width: 28)
         }
     }
 
-    private func activateGroupPreset(_ preset: GroupPreset) {
-        guard let coordinator = viewModel.speakers.first(where: { $0.id == preset.coordinatorId }) else { return }
-        let members = viewModel.speakers.filter { preset.memberIds.contains($0.id) }
-        Task { await viewModel.groupSpeakers(members, coordinator: coordinator) }
+    // MARK: - Grouping Row
+
+    @ViewBuilder
+    private func groupingRow(_ speaker: Speaker) -> some View {
+        let isInGroup = groupSelection.contains(speaker.id)
+
+        Button {
+            if groupSelection.contains(speaker.id) {
+                groupSelection.remove(speaker.id)
+            } else {
+                groupSelection.insert(speaker.id)
+            }
+        } label: {
+            HStack {
+                Image(systemName: isInGroup ? "checkmark.circle.fill" : "circle")
+                    .foregroundStyle(isInGroup ? .green : .secondary)
+                    .font(.title3)
+                Text(speaker.name).font(.headline)
+                Spacer()
+            }
+        }
+        .listRowBackground(isInGroup ? Color.green.opacity(0.08) : nil)
     }
 
-    private func saveCurrentGrouping() {
-        guard !newGroupName.isEmpty, !viewModel.speakers.isEmpty else { return }
-        let coordinator = viewModel.speakers.first!
-        let preset = GroupPreset(
-            name: newGroupName,
-            coordinatorId: coordinator.id,
-            memberIds: viewModel.speakers.map(\.id)
-        )
-        modelContext.insert(preset)
-        newGroupName = ""
+    // MARK: - Helpers
+
+    private func statusText(for speaker: Speaker) -> String {
+        let track = speaker.currentTrackName
+        switch speaker.transportState {
+        case .playing:
+            return track ?? "Playing"
+        case .paused:
+            if let track { return "Paused — \(track)" }
+            return "Paused"
+        case .stopped, .noMedia:
+            if let track { return track }
+            return "Idle"
+        case .transitioning:
+            return "Loading..."
+        }
+    }
+
+    private func createGroup() {
+        guard let coordinatorId = groupSelection.first,
+              let coordinator = viewModel.speakers.first(where: { $0.id == coordinatorId }) else { return }
+        let members = viewModel.speakers.filter { groupSelection.contains($0.id) }
+        Task {
+            await viewModel.groupSpeakers(members, coordinator: coordinator)
+            isGrouping = false
+            groupSelection.removeAll()
+        }
     }
 }

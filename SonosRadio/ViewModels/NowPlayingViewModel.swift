@@ -8,29 +8,80 @@ final class NowPlayingViewModel {
     var transportState: TransportState = .stopped
     var volume: Int = 0
     var isMuted: Bool = false
+    var isLoading: Bool = false
     var errorMessage: String?
+    var recentStations: [Station] = []
 
     private let provider: any ControlProvider
     private let volumeDebouncer = Debouncer(interval: .milliseconds(150))
+    private let streamResolver = StreamResolver()
+    private let iHeartService = IHeartService()
+    private let tuneInService = TuneInService()
+    private var iHeartSN: Int?
+    private var tuneInSN: Int?
 
     init(provider: any ControlProvider) {
         self.provider = provider
     }
 
     func play(station: Station, on speaker: Speaker) async {
+        isLoading = true
+        errorMessage = nil
+        print("[Play] Starting: '\(station.name)' (source=\(station.source), sourceId=\(station.sourceId ?? "nil")) on \(speaker.name) (\(speaker.ipAddress))")
         do {
-            let metadata = StationMetadata(
-                title: station.name,
-                artworkURL: station.artworkURL,
-                streamURL: station.streamURL
-            )
-            try await provider.play(streamURL: station.streamURL, on: speaker, metadata: metadata)
+            // Resolve the actual stream URL based on source
+            var resolvedURL: String
+            if station.source == .tuneIn, let guideId = station.sourceId {
+                // Use Sonos-native TuneIn music service URI
+                if tuneInSN == nil {
+                    print("[Play] Discovering TuneIn service SN...")
+                    tuneInSN = try await provider.getMusicServiceSN(serviceId: 254, from: speaker)
+                    print("[Play] Discovered TuneIn SN: \(tuneInSN?.description ?? "nil, using default 1")")
+                }
+                let sn = tuneInSN ?? 1
+                resolvedURL = "x-sonosapi-stream:\(guideId)?sid=254&flags=8232&sn=\(sn)"
+                print("[Play] Using Sonos TuneIn URI: \(resolvedURL)")
+            } else if station.source == .iHeart, let sourceId = station.sourceId {
+                // Use Sonos-native iHeart music service URI
+                // Discover sn lazily on first use
+                if iHeartSN == nil {
+                    print("[Play] Discovering iHeart service SN...")
+                    iHeartSN = try await provider.getMusicServiceSN(serviceId: 6, from: speaker)
+                    print("[Play] Discovered iHeart SN: \(iHeartSN?.description ?? "nil, using default 17")")
+                }
+                let sn = iHeartSN ?? 17
+                resolvedURL = "x-sonosapi-stream:live_stations.\(sourceId)?sid=6&flags=8232&sn=\(sn)"
+                print("[Play] Using Sonos iHeart URI: \(resolvedURL)")
+            } else {
+                print("[Play] Resolving stream URL: \(station.streamURL)")
+                resolvedURL = try await streamResolver.resolve(url: station.streamURL)
+            }
+            // Wrap direct HTTP/HTTPS streams with x-rincon-mp3radio://
+            // This tells Sonos to treat it as a radio stream (handles both protocols)
+            if !resolvedURL.hasPrefix("x-sonosapi-stream:") && !resolvedURL.hasPrefix("x-rincon-") {
+                resolvedURL = "x-rincon-mp3radio://\(resolvedURL)"
+                print("[Play] Wrapped as Sonos radio URI: \(resolvedURL)")
+            }
+
+            print("[Play] Final stream URL: \(resolvedURL)")
+
+            // Always pass metadata so Sonos knows the station name and content type
+            let metadata = StationMetadata(title: station.name, streamURL: resolvedURL)
+
+            print("[Play] Sending to speaker...")
+            try await provider.play(streamURL: resolvedURL, on: speaker, metadata: metadata)
+            print("[Play] Success!")
+            addToRecents(station)
             currentStation = station
             activeSpeaker = speaker
             transportState = .playing
+            volume = speaker.volume
+            isMuted = speaker.isMuted
         } catch {
+            print("[Play] ERROR: \(error)")
             errorMessage = error.localizedDescription
         }
+        isLoading = false
     }
 
     func stop() async {
@@ -80,6 +131,18 @@ final class NowPlayingViewModel {
             try await provider.mute(isMuted, on: speaker)
         } catch {
             errorMessage = error.localizedDescription
+        }
+    }
+
+    func clearRecents() {
+        recentStations = []
+    }
+
+    private func addToRecents(_ station: Station) {
+        recentStations.removeAll { $0.id == station.id }
+        recentStations.insert(station, at: 0)
+        if recentStations.count > 5 {
+            recentStations = Array(recentStations.prefix(5))
         }
     }
 }

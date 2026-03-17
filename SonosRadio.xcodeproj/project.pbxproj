@@ -14,6 +14,7 @@
 		290DDE8EC5D5CB9F72B84FD6 /* ControlProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = D91B9C3042E8FAD86EC07117 /* ControlProvider.swift */; };
 		31ED0C3ACFE8BBE3F5778797 /* Speaker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 794842FBBFE4C8B634A864A1 /* Speaker.swift */; };
 		33B0D507BF10002049979E48 /* StationsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23AE9B90C71C24750A5CA65C /* StationsView.swift */; };
+		5B1497444757FAC4C41765C0 /* ZoneGroupParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D635890154B2B516F6B6D4B /* ZoneGroupParser.swift */; };
 		6092EE400312AC1844BE6FD8 /* SpeakersViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B6D1CE3FC212D18E6F3B85A /* SpeakersViewModel.swift */; };
 		751CC2DEE7158229FEB95B2E /* Debouncer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 043583239186FDAB74A74F02 /* Debouncer.swift */; };
 		7FCADAA6B8EBD86661B4B1AB /* StationPreset.swift in Sources */ = {isa = PBXBuildFile; fileRef = 820B8C3046ABB0FD93F119BE /* StationPreset.swift */; };
@@ -27,8 +28,6 @@
 		9B6EF63B5B6C3F1CD27B8E0B /* UPnPEventServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F115A3E93D4014531C23586 /* UPnPEventServer.swift */; };
 		9FDB57AF7770458FF52C3A21 /* Station.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8B2D5F5F0109930CD60147E /* Station.swift */; };
 		A13378FBECF9D9FDEA22243B /* SOAPClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16EFAC96182998115A206CF9 /* SOAPClient.swift */; };
-		AA19DCE81310D89D7CF4B084 /* GroupPreset.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B7A69B90202D0C6F1FEBC3C /* GroupPreset.swift */; };
-		B44616E6E723FE127064E0CB /* NowPlayingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F2A0664E467D69361558B72 /* NowPlayingView.swift */; };
 		C9223A9640571246AB7A3713 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF4859EC82DAB6D127F0BD54 /* SettingsView.swift */; };
 		D34D4FFEDBF33A53B7C0462D /* SpeakersView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7509C7766CA675CA9C09B9A4 /* SpeakersView.swift */; };
 		E92EE83D9AB24AF61EBC67DD /* PresetImporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 208C0AD0D71C9F68E4BA05AD /* PresetImporter.swift */; };
@@ -47,9 +46,9 @@
 
 /* Begin PBXFileReference section */
 		043583239186FDAB74A74F02 /* Debouncer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Debouncer.swift; sourceTree = "<group>"; };
+		0D635890154B2B516F6B6D4B /* ZoneGroupParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZoneGroupParser.swift; sourceTree = "<group>"; };
 		0FC4BA3CBB260F9E843DDFF1 /* SonosRadio.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = SonosRadio.entitlements; sourceTree = "<group>"; };
 		16EFAC96182998115A206CF9 /* SOAPClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SOAPClient.swift; sourceTree = "<group>"; };
-		1B7A69B90202D0C6F1FEBC3C /* GroupPreset.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupPreset.swift; sourceTree = "<group>"; };
 		1EFB24721A507EDF95DE95E0 /* StationRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StationRowView.swift; sourceTree = "<group>"; };
 		208C0AD0D71C9F68E4BA05AD /* PresetImporter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PresetImporter.swift; sourceTree = "<group>"; };
 		219EB347B326BA078EBEA69B /* TuneInService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TuneInService.swift; sourceTree = "<group>"; };
@@ -59,10 +58,9 @@
 		300D73770DB7A1073223F383 /* StationsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StationsViewModel.swift; sourceTree = "<group>"; };
 		471ED30ECDA7832C01E20385 /* SonosRadioApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SonosRadioApp.swift; sourceTree = "<group>"; };
 		5E4B12302E872DCBBB50AE65 /* IHeartService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IHeartService.swift; sourceTree = "<group>"; };
-		6F2A0664E467D69361558B72 /* NowPlayingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NowPlayingView.swift; sourceTree = "<group>"; };
 		7509C7766CA675CA9C09B9A4 /* SpeakersView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpeakersView.swift; sourceTree = "<group>"; };
 		794842FBBFE4C8B634A864A1 /* Speaker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Speaker.swift; sourceTree = "<group>"; };
-		815A6F9576FC40C1B7879E95 /* SonosRadio.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = SonosRadio.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		815A6F9576FC40C1B7879E95 /* SonosRadio.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SonosRadio.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		820B8C3046ABB0FD93F119BE /* StationPreset.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StationPreset.swift; sourceTree = "<group>"; };
 		8B5C6D90AF9F9B0C4D73AE20 /* StreamResolver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StreamResolver.swift; sourceTree = "<group>"; };
 		8EB0A4041FDB603B6BB0835B /* ImportSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImportSource.swift; sourceTree = "<group>"; };
@@ -112,14 +110,6 @@
 			);
 			sourceTree = "<group>";
 		};
-		437509822D3CBD38515533F7 /* NowPlaying */ = {
-			isa = PBXGroup;
-			children = (
-				6F2A0664E467D69361558B72 /* NowPlayingView.swift */,
-			);
-			path = NowPlaying;
-			sourceTree = "<group>";
-		};
 		594AFB436D5657F1BC7CC585 /* ViewModels */ = {
 			isa = PBXGroup;
 			children = (
@@ -142,6 +132,7 @@
 			children = (
 				043583239186FDAB74A74F02 /* Debouncer.swift */,
 				2BC375C2B9AB9CE7A7DA8B75 /* XMLHelpers.swift */,
+				0D635890154B2B516F6B6D4B /* ZoneGroupParser.swift */,
 			);
 			path = Utilities;
 			sourceTree = "<group>";
@@ -149,7 +140,6 @@
 		93D9F77E594ECD035499CA05 /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				437509822D3CBD38515533F7 /* NowPlaying */,
 				060A79256B344DAB917700C0 /* Settings */,
 				11EE830DE7F1EB53627787F7 /* Speakers */,
 				A7098B7D1632C0CB1BF21A23 /* Stations */,
@@ -180,7 +170,6 @@
 		B8356505BE913DD2937989B1 /* Models */ = {
 			isa = PBXGroup;
 			children = (
-				1B7A69B90202D0C6F1FEBC3C /* GroupPreset.swift */,
 				8EB0A4041FDB603B6BB0835B /* ImportSource.swift */,
 				794842FBBFE4C8B634A864A1 /* Speaker.swift */,
 				E8B2D5F5F0109930CD60147E /* Station.swift */,
@@ -273,8 +262,6 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = YES;
 				LastUpgradeCheck = 1600;
-				TargetAttributes = {
-				};
 			};
 			buildConfigurationList = FDD3A50ED3E61AFF4F45F1A1 /* Build configuration list for PBXProject "SonosRadio" */;
 			developmentRegion = en;
@@ -310,11 +297,9 @@
 			files = (
 				290DDE8EC5D5CB9F72B84FD6 /* ControlProvider.swift in Sources */,
 				751CC2DEE7158229FEB95B2E /* Debouncer.swift in Sources */,
-				AA19DCE81310D89D7CF4B084 /* GroupPreset.swift in Sources */,
 				1C63EB2AB1B6734C58EAF7A1 /* IHeartService.swift in Sources */,
 				F62183E3B197EDA8251041FF /* ImportSource.swift in Sources */,
 				0F8463231CE01AF2AC1E8BCB /* LocalUPnPProvider.swift in Sources */,
-				B44616E6E723FE127064E0CB /* NowPlayingView.swift in Sources */,
 				86DA2DF87577964802F197D8 /* NowPlayingViewModel.swift in Sources */,
 				E92EE83D9AB24AF61EBC67DD /* PresetImporter.swift in Sources */,
 				A13378FBECF9D9FDEA22243B /* SOAPClient.swift in Sources */,
@@ -334,6 +319,7 @@
 				1DBDFFDD57D71C27C91E3F28 /* UPnPEventParser.swift in Sources */,
 				9B6EF63B5B6C3F1CD27B8E0B /* UPnPEventServer.swift in Sources */,
 				886743EE72EDFAB958F68600 /* XMLHelpers.swift in Sources */,
+				5B1497444757FAC4C41765C0 /* ZoneGroupParser.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -475,6 +461,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = SonosRadio/SonosRadio.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
+				DEVELOPMENT_TEAM = 9J857XHJMC;
 				INFOPLIST_FILE = SonosRadio/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
