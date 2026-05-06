@@ -113,14 +113,22 @@ struct StreamResolver: Sendable {
 
 /// Captures redirect URLs and cancels the request after headers arrive,
 /// preventing infinite downloads from audio streams.
-private final class HeaderOnlyDelegate: NSObject, URLSessionDataDelegate {
-    var capturedRedirectURL: URL?
+private final class HeaderOnlyDelegate: NSObject, URLSessionDataDelegate, @unchecked Sendable {
+    private let lock = NSLock()
+    private var _capturedRedirectURL: URL?
+
+    var capturedRedirectURL: URL? {
+        lock.lock(); defer { lock.unlock() }
+        return _capturedRedirectURL
+    }
 
     func urlSession(_ session: URLSession, task: URLSessionTask,
                     willPerformHTTPRedirection response: HTTPURLResponse,
                     newRequest request: URLRequest,
                     completionHandler: @escaping (URLRequest?) -> Void) {
-        capturedRedirectURL = request.url
+        lock.lock()
+        _capturedRedirectURL = request.url
+        lock.unlock()
         completionHandler(nil) // Don't follow — we captured the URL
     }
 
