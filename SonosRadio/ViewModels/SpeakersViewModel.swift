@@ -32,7 +32,7 @@ final class SpeakersViewModel {
             speakers.sort { $0.name.localizedCaseInsensitiveCompare($1.name) == .orderedAscending }
             rebuildGroups()
 
-            if selectedSpeaker == nil, let first = speakers.first {
+            if selectedSpeaker == nil, let first = speakers.first(where: { $0.isVisible }) {
                 selectedSpeaker = first
             }
             startPolling()
@@ -75,6 +75,18 @@ final class SpeakersViewModel {
         if selectedSpeaker?.id == speaker.id {
             selectedSpeaker?.volume = level
         }
+        // Update in groups too so the view's slider binding stays in sync
+        // (groups holds copies of speakers, not references)
+        for gi in groups.indices {
+            if groups[gi].coordinator.id == speaker.id {
+                groups[gi].coordinator.volume = level
+            }
+            for mi in groups[gi].members.indices {
+                if groups[gi].members[mi].id == speaker.id {
+                    groups[gi].members[mi].volume = level
+                }
+            }
+        }
         let provider = self.provider
         Task {
             await volumeDebouncer.debounce {
@@ -91,6 +103,16 @@ final class SpeakersViewModel {
         if selectedSpeaker?.id == speaker.id {
             selectedSpeaker?.isMuted = newMute
         }
+        for gi in groups.indices {
+            if groups[gi].coordinator.id == speaker.id {
+                groups[gi].coordinator.isMuted = newMute
+            }
+            for mi in groups[gi].members.indices {
+                if groups[gi].members[mi].id == speaker.id {
+                    groups[gi].members[mi].isMuted = newMute
+                }
+            }
+        }
         do {
             try await provider.mute(newMute, on: speaker)
         } catch {
@@ -99,8 +121,10 @@ final class SpeakersViewModel {
     }
 
     func groupSpeakers(_ selected: [Speaker], coordinator: Speaker) async {
+        print("[VM] groupSpeakers: coordinator=\(coordinator.name) (\(coordinator.id)) members=\(selected.map(\.name))")
         do {
             try await provider.groupSpeakers(selected, coordinator: coordinator)
+            print("[VM] groupSpeakers: SOAP succeeded, fetching topology...")
             // Re-fetch topology after grouping
             if let anySpeaker = speakers.first {
                 try? await Task.sleep(for: .seconds(1))
@@ -109,11 +133,13 @@ final class SpeakersViewModel {
                 rebuildGroups()
             }
         } catch {
+            print("[VM] groupSpeakers ERROR: \(error)")
             errorMessage = error.localizedDescription
         }
     }
 
     func ungroupSpeaker(_ speaker: Speaker) async {
+        print("[VM] ungroupSpeaker: \(speaker.name) (\(speaker.id))")
         do {
             try await provider.ungroupSpeaker(speaker)
             if let anySpeaker = speakers.first {
@@ -129,7 +155,7 @@ final class SpeakersViewModel {
 
     // MARK: - Group Topology
 
-    /// Apply zone group topology to discovered speakers (set groupId/isCoordinator).
+    /// Apply zone group topology to discovered speakers (set groupId/isCoordinator/isVisible).
     private func applyGroupTopology(_ topology: [SpeakerGroup]) {
         for group in topology {
             let coordinatorId = group.coordinator.id
@@ -137,15 +163,17 @@ final class SpeakersViewModel {
                 if let idx = speakers.firstIndex(where: { $0.id == member.id }) {
                     speakers[idx].groupId = coordinatorId
                     speakers[idx].isCoordinator = (member.id == coordinatorId)
+                    speakers[idx].isVisible = member.isVisible
                 }
             }
         }
     }
 
     /// Build display groups from the flat speaker list using groupId.
+    /// Filters out invisible speakers (subs, stereo pair partners, surround satellites).
     private func rebuildGroups() {
         var groupMap: [String: SpeakerGroup] = [:]
-        for speaker in speakers {
+        for speaker in speakers where speaker.isVisible {
             let gid = speaker.groupId ?? speaker.id
             if speaker.isCoordinator || groupMap[gid] == nil {
                 if var existing = groupMap[gid] {

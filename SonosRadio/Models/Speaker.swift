@@ -30,6 +30,11 @@ struct Speaker: Identifiable, Hashable, Sendable {
 
     var isCoordinator: Bool = true
     var groupId: String?
+
+    /// False for bonded secondaries — subs, stereo pair partners, surround satellites.
+    /// These devices are physically real but should not appear in the user-facing speaker list,
+    /// and they reject grouping commands.
+    var isVisible: Bool = true
 }
 
 // MARK: - Speaker Group

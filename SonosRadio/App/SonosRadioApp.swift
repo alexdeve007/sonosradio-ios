@@ -27,8 +27,7 @@ struct SonosRadioApp: App {
             }
         }
         .modelContainer(for: [
-            StationPreset.self,
-            ImportSource.self
+            StationPreset.self
         ])
     }
 }
@@ -38,13 +37,20 @@ struct ContentView: View {
     @Bindable var nowPlayingVM: NowPlayingViewModel
     @Bindable var stationsVM: StationsViewModel
 
+    private enum Tab: Hashable { case speakers, stations }
+    @State private var selectedTab: Tab = .speakers
+
     var body: some View {
-        TabView {
+        TabView(selection: $selectedTab) {
+            SpeakersView(viewModel: speakersVM, onSpeakerSelected: {
+                selectedTab = .stations
+            })
+            .tabItem { Label("Speakers", systemImage: "hifispeaker.2") }
+            .tag(Tab.speakers)
+
             StationsView(viewModel: stationsVM, nowPlayingViewModel: nowPlayingVM, speakersVM: speakersVM)
                 .tabItem { Label("Stations", systemImage: "radio") }
-
-            SpeakersView(viewModel: speakersVM)
-                .tabItem { Label("Speakers", systemImage: "hifispeaker.2") }
+                .tag(Tab.stations)
         }
         .task {
             await speakersVM.discover()

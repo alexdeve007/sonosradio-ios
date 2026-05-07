@@ -15,13 +15,19 @@ final class NowPlayingViewModel {
     private let provider: any ControlProvider
     private let volumeDebouncer = Debouncer(interval: .milliseconds(150))
     private let streamResolver = StreamResolver()
-    private let iHeartService = IHeartService()
     private let tuneInService = TuneInService()
-    private var iHeartSN: Int?
     private var tuneInSN: Int?
+
+    private static let recentsKey = "recentStations.v1"
+    private static let recentsCap = 20
 
     init(provider: any ControlProvider) {
         self.provider = provider
+        // Restore persisted recents
+        if let data = UserDefaults.standard.data(forKey: Self.recentsKey),
+           let decoded = try? JSONDecoder().decode([Station].self, from: data) {
+            self.recentStations = decoded
+        }
     }
 
     func play(station: Station, on speaker: Speaker) async {
@@ -41,17 +47,6 @@ final class NowPlayingViewModel {
                 let sn = tuneInSN ?? 1
                 resolvedURL = "x-sonosapi-stream:\(guideId)?sid=254&flags=8232&sn=\(sn)"
                 print("[Play] Using Sonos TuneIn URI: \(resolvedURL)")
-            } else if station.source == .iHeart, let sourceId = station.sourceId {
-                // Use Sonos-native iHeart music service URI
-                // Discover sn lazily on first use
-                if iHeartSN == nil {
-                    print("[Play] Discovering iHeart service SN...")
-                    iHeartSN = try await provider.getMusicServiceSN(serviceId: 6, from: speaker)
-                    print("[Play] Discovered iHeart SN: \(iHeartSN?.description ?? "nil, using default 17")")
-                }
-                let sn = iHeartSN ?? 17
-                resolvedURL = "x-sonosapi-stream:live_stations.\(sourceId)?sid=6&flags=8232&sn=\(sn)"
-                print("[Play] Using Sonos iHeart URI: \(resolvedURL)")
             } else {
                 print("[Play] Resolving stream URL: \(station.streamURL)")
                 resolvedURL = try await streamResolver.resolve(url: station.streamURL)
@@ -136,13 +131,21 @@ final class NowPlayingViewModel {
 
     func clearRecents() {
         recentStations = []
+        persistRecents()
     }
 
     private func addToRecents(_ station: Station) {
         recentStations.removeAll { $0.id == station.id }
         recentStations.insert(station, at: 0)
-        if recentStations.count > 5 {
-            recentStations = Array(recentStations.prefix(5))
+        if recentStations.count > Self.recentsCap {
+            recentStations = Array(recentStations.prefix(Self.recentsCap))
+        }
+        persistRecents()
+    }
+
+    private func persistRecents() {
+        if let data = try? JSONEncoder().encode(recentStations) {
+            UserDefaults.standard.set(data, forKey: Self.recentsKey)
         }
     }
 }

@@ -2,6 +2,7 @@ import SwiftUI
 
 struct SpeakersView: View {
     @Bindable var viewModel: SpeakersViewModel
+    var onSpeakerSelected: () -> Void = {}
 
     @State private var isGrouping = false
     @State private var groupSelection: Set<String> = []
@@ -13,24 +14,36 @@ struct SpeakersView: View {
                     ProgressView("Discovering speakers...")
                 }
 
-                if isGrouping {
-                    Section("Select speakers to group") {
-                        ForEach(viewModel.speakers) { speaker in
+                if isGrouping, let coordinator = viewModel.selectedSpeaker {
+                    Section {
+                        HStack(spacing: 8) {
+                            Image(systemName: "hifispeaker.fill")
+                                .foregroundStyle(.blue)
+                            VStack(alignment: .leading, spacing: 2) {
+                                Text(coordinator.name).font(.headline)
+                                Text("Music plays from here")
+                                    .font(.caption).foregroundStyle(.secondary)
+                            }
+                        }
+                    } header: {
+                        Text("Coordinator")
+                    }
+
+                    Section {
+                        ForEach(viewModel.speakers.filter { $0.id != coordinator.id && $0.isVisible }) { speaker in
                             groupingRow(speaker)
                         }
+                    } header: {
+                        Text("Add these speakers")
                     }
+
                     Section {
                         Button {
-                            createGroup()
+                            createGroup(coordinator: coordinator)
                         } label: {
-                            Label("Group Selected (\(groupSelection.count))", systemImage: "link")
+                            Label(groupButtonLabel(coordinator: coordinator), systemImage: "link")
                         }
-                        .disabled(groupSelection.count < 2)
-
-                        Button("Cancel", role: .cancel) {
-                            isGrouping = false
-                            groupSelection.removeAll()
-                        }
+                        .disabled(groupSelection.filter { $0 != coordinator.id }.isEmpty)
                     }
                 } else {
                     ForEach(viewModel.groups) { group in
@@ -54,16 +67,19 @@ struct SpeakersView: View {
                     }
                 }
                 ToolbarItem(placement: .topBarTrailing) {
-                    if !isGrouping {
+                    if isGrouping {
+                        Button("Cancel") {
+                            isGrouping = false
+                            groupSelection.removeAll()
+                        }
+                    } else {
                         Button {
                             isGrouping = true
-                            if let id = viewModel.selectedSpeaker?.id {
-                                groupSelection = [id]
-                            }
+                            groupSelection.removeAll()
                         } label: {
                             Image(systemName: "link")
                         }
-                        .disabled(viewModel.speakers.count < 2)
+                        .disabled(viewModel.speakers.count < 2 || viewModel.selectedSpeaker == nil)
                     }
                 }
             }
@@ -128,6 +144,7 @@ struct SpeakersView: View {
         .contentShape(Rectangle())
         .onTapGesture {
             viewModel.selectSpeaker(speaker)
+            onSpeakerSelected()
         }
         .listRowBackground(isSelected ? Color.blue.opacity(0.08) : nil)
     }
@@ -142,10 +159,30 @@ struct SpeakersView: View {
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
                 Spacer()
+                Button {
+                    print("[Group] Ungrouping \(speaker.name)")
+                    Task { await viewModel.ungroupSpeaker(speaker) }
+                } label: {
+                    HStack(spacing: 4) {
+                        Image(systemName: "xmark.circle.fill")
+                        Text("Ungroup")
+                    }
+                    .font(.footnote)
+                    .foregroundStyle(.red)
+                }
+                .buttonStyle(.plain)
+                .accessibilityLabel("Remove from group")
             }
             volumeRow(speaker)
         }
         .padding(.vertical, 2)
+        .swipeActions(edge: .trailing) {
+            Button(role: .destructive) {
+                Task { await viewModel.ungroupSpeaker(speaker) }
+            } label: {
+                Label("Ungroup", systemImage: "xmark.circle.fill")
+            }
+        }
     }
 
     // MARK: - Volume Row (shared)
@@ -215,14 +252,21 @@ struct SpeakersView: View {
         }
     }
 
-    private func createGroup() {
-        guard let coordinatorId = groupSelection.first,
-              let coordinator = viewModel.speakers.first(where: { $0.id == coordinatorId }) else { return }
-        let members = viewModel.speakers.filter { groupSelection.contains($0.id) }
+    private func createGroup(coordinator: Speaker) {
+        let memberIds = groupSelection.subtracting([coordinator.id])
+        let members = viewModel.speakers.filter { memberIds.contains($0.id) }
+        guard !members.isEmpty else { return }
+        print("[Group] Coordinator=\(coordinator.name), adding \(members.count): \(members.map(\.name).joined(separator: ", "))")
         Task {
             await viewModel.groupSpeakers(members, coordinator: coordinator)
             isGrouping = false
             groupSelection.removeAll()
         }
+    }
+
+    private func groupButtonLabel(coordinator: Speaker) -> String {
+        let count = groupSelection.subtracting([coordinator.id]).count
+        if count == 0 { return "Select speakers to add" }
+        return "Group with \(coordinator.name)"
     }
 }

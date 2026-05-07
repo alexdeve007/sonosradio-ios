@@ -29,6 +29,9 @@ final class ZoneGroupParser: NSObject, XMLParserDelegate {
 
             let host = locationURL.host ?? ""
             let port = locationURL.port ?? 1400
+            // Sonos sets Invisible="1" on bonded secondaries (subs, stereo pair partners, surrounds).
+            // These devices reject grouping SOAP and shouldn't appear in user-facing lists.
+            let invisible = attributes["Invisible"] == "1"
 
             let speaker = Speaker(
                 id: uuid,
@@ -36,7 +39,8 @@ final class ZoneGroupParser: NSObject, XMLParserDelegate {
                 ipAddress: host,
                 port: port,
                 isCoordinator: uuid == currentCoordinatorId,
-                groupId: currentCoordinatorId
+                groupId: currentCoordinatorId,
+                isVisible: !invisible
             )
             currentMembers.append(speaker)
         }

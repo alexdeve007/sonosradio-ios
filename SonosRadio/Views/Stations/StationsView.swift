@@ -9,9 +9,6 @@ struct StationsView: View {
     @Query(sort: \StationPreset.sortOrder) private var presets: [StationPreset]
     @Environment(\.modelContext) private var modelContext
 
-    @State private var showImportSheet = false
-    @State private var importURL = ""
-
     private var targetSpeaker: Speaker? { speakersVM.selectedSpeaker }
 
     private var selectedSpeakerId: Binding<String> {
@@ -95,17 +92,27 @@ struct StationsView: View {
                             Button {
                                 playStation(station)
                             } label: {
-                                VStack(alignment: .leading, spacing: 2) {
-                                    Text(station.name).font(.body)
-                                    Text(station.source.rawValue)
-                                        .font(.caption).foregroundStyle(.secondary)
+                                HStack {
+                                    AsyncImage(url: station.artworkURL) { image in
+                                        image.resizable().aspectRatio(contentMode: .fill)
+                                    } placeholder: {
+                                        Image(systemName: "radio").foregroundStyle(.secondary)
+                                    }
+                                    .frame(width: 40, height: 40)
+                                    .clipShape(RoundedRectangle(cornerRadius: 6))
+
+                                    VStack(alignment: .leading, spacing: 2) {
+                                        Text(station.name).font(.body)
+                                        Text(station.source.rawValue)
+                                            .font(.caption).foregroundStyle(.secondary)
+                                    }
                                 }
                             }
                             .disabled(targetSpeaker == nil)
                         }
                     } header: {
                         HStack {
-                            Text("Recent")
+                            Text("Past Played")
                             Spacer()
                             Button {
                                 nowPlayingViewModel.clearRecents()
@@ -181,31 +188,6 @@ struct StationsView: View {
                 Button("OK") { nowPlayingViewModel.errorMessage = nil }
             } message: {
                 Text(nowPlayingViewModel.errorMessage ?? "")
-            }
-            .toolbar {
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button { showImportSheet = true } label: {
-                        Image(systemName: "square.and.arrow.down")
-                    }
-                }
-            }
-            .sheet(isPresented: $showImportSheet) {
-                NavigationStack {
-                    Form {
-                        TextField("JSON URL", text: $importURL)
-                            .textInputAutocapitalization(.never)
-                            .keyboardType(.URL)
-                        Button("Import") {
-                            Task {
-                                await viewModel.importFromURL(importURL, context: modelContext)
-                                showImportSheet = false
-                            }
-                        }
-                    }
-                    .navigationTitle("Import Presets")
-                    .navigationBarTitleDisplayMode(.inline)
-                }
-                .presentationDetents([.medium])
             }
         }
     }

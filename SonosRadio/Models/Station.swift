@@ -2,11 +2,10 @@ import Foundation
 
 enum StationSource: String, Codable, Sendable {
     case tuneIn
-    case iHeart
     case directURL
 }
 
-struct Station: Identifiable, Sendable {
+struct Station: Identifiable, Sendable, Codable {
     let id: String
     var name: String
     var streamURL: String
