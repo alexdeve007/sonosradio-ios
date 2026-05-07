@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		AA0001000000000000000001 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AA0002000000000000000002 /* Assets.xcassets */; };
 		022903E3FD0B53F4604ADD17 /* SonosRadioApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 471ED30ECDA7832C01E20385 /* SonosRadioApp.swift */; };
 		0F8463231CE01AF2AC1E8BCB /* LocalUPnPProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = B868CC2AC533CF4265224176 /* LocalUPnPProvider.swift */; };
 		1DBDFFDD57D71C27C91E3F28 /* UPnPEventParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDF026524DCD66308810A75C /* UPnPEventParser.swift */; };
@@ -44,6 +45,7 @@
 /* Begin PBXFileReference section */
 		043583239186FDAB74A74F02 /* Debouncer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Debouncer.swift; sourceTree = "<group>"; };
 		0D635890154B2B516F6B6D4B /* ZoneGroupParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZoneGroupParser.swift; sourceTree = "<group>"; };
+		AA0002000000000000000002 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		0FC4BA3CBB260F9E843DDFF1 /* SonosRadio.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = SonosRadio.entitlements; sourceTree = "<group>"; };
 		16EFAC96182998115A206CF9 /* SOAPClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SOAPClient.swift; sourceTree = "<group>"; };
 		1EFB24721A507EDF95DE95E0 /* StationRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StationRowView.swift; sourceTree = "<group>"; };
@@ -172,6 +174,7 @@
 		CD9B6836B43AD9B246937350 /* SonosRadio */ = {
 			isa = PBXGroup;
 			children = (
+				AA0002000000000000000002 /* Assets.xcassets */,
 				E4F1CE4B0BF13A1617D14249 /* Info.plist */,
 				0FC4BA3CBB260F9E843DDFF1 /* SonosRadio.entitlements */,
 				30F6E6BBCC12BBF9D555EFBC /* App */,
@@ -233,6 +236,7 @@
 			buildConfigurationList = EFF20EEF7307065CD5B2010A /* Build configuration list for PBXNativeTarget "SonosRadio" */;
 			buildPhases = (
 				AE7B2A91078B7F5D56A19F4A /* Sources */,
+				AA0003000000000000000003 /* Resources */,
 			);
 			buildRules = (
 			);
@@ -273,6 +277,17 @@
 			);
 		};
 /* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		AA0003000000000000000003 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				AA0001000000000000000001 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		58FF9FEE59BFEF9CEEED758F /* Sources */ = {
