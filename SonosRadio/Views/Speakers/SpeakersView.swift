@@ -163,12 +163,13 @@ struct SpeakersView: View {
                     print("[Group] Ungrouping \(speaker.name)")
                     Task { await viewModel.ungroupSpeaker(speaker) }
                 } label: {
-                    HStack(spacing: 4) {
-                        Image(systemName: "xmark.circle.fill")
-                        Text("Ungroup")
-                    }
-                    .font(.footnote)
-                    .foregroundStyle(.red)
+                    Image(systemName: "link.badge.minus")
+                        .font(.footnote.weight(.semibold))
+                        .foregroundStyle(.red.opacity(0.9))
+                        .padding(.horizontal, 10)
+                        .padding(.vertical, 6)
+                        .background(Color.red.opacity(0.10), in: Capsule())
+                        .overlay(Capsule().strokeBorder(Color.red.opacity(0.18), lineWidth: 0.5))
                 }
                 .buttonStyle(.plain)
                 .accessibilityLabel("Remove from group")
