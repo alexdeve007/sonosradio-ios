@@ -11,6 +11,13 @@ struct StationsView: View {
 
     private var targetSpeaker: Speaker? { speakersVM.selectedSpeaker }
 
+    private var searchPlaceholder: String {
+        switch viewModel.selectedSource {
+        case .directURL: return "Enter URL"
+        case .tuneIn:    return "Search stations..."
+        }
+    }
+
     private var selectedSpeakerId: Binding<String> {
         Binding(
             get: { speakersVM.selectedSpeaker?.id ?? "" },
@@ -50,8 +57,9 @@ struct StationsView: View {
                     }
 
                     HStack {
-                        TextField("Search stations...", text: $viewModel.searchQuery)
+                        TextField(searchPlaceholder, text: $viewModel.searchQuery)
                             .textInputAutocapitalization(.never)
+                            .keyboardType(viewModel.selectedSource == .directURL ? .URL : .default)
                             .onSubmit { Task { await viewModel.search() } }
                         if !viewModel.searchQuery.isEmpty {
                             Button {
