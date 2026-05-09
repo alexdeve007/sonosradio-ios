@@ -19,7 +19,6 @@ final class NowPlayingViewModel {
     private var tuneInSN: Int?
 
     private static let recentsKey = "recentStations.v1"
-    private static let recentsCap = 20
 
     init(provider: any ControlProvider) {
         self.provider = provider
@@ -134,12 +133,14 @@ final class NowPlayingViewModel {
         persistRecents()
     }
 
+    func removeRecent(_ station: Station) {
+        recentStations.removeAll { $0.id == station.id }
+        persistRecents()
+    }
+
     private func addToRecents(_ station: Station) {
         recentStations.removeAll { $0.id == station.id }
         recentStations.insert(station, at: 0)
-        if recentStations.count > Self.recentsCap {
-            recentStations = Array(recentStations.prefix(Self.recentsCap))
-        }
         persistRecents()
     }
 

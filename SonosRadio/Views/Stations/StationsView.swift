@@ -117,6 +117,20 @@ struct StationsView: View {
                                 }
                             }
                             .disabled(targetSpeaker == nil)
+                            .swipeActions(edge: .trailing) {
+                                Button(role: .destructive) {
+                                    nowPlayingViewModel.removeRecent(station)
+                                } label: {
+                                    Label("Remove", systemImage: "trash")
+                                }
+                            }
+                            .contextMenu {
+                                Button(role: .destructive) {
+                                    nowPlayingViewModel.removeRecent(station)
+                                } label: {
+                                    Label("Remove", systemImage: "trash")
+                                }
+                            }
                         }
                     } header: {
                         HStack {
